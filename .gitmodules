@@ -4,3 +4,6 @@
 [submodule "Data.Doublets.Gql"]
 	path = Data.Doublets.Gql
 	url = https://github.com/linksplatform/Data.Doublets.Gql
+[submodule "graphql-bench"]
+	path = graphql-bench
+	url = https://github.com/hasura/graphql-bench
