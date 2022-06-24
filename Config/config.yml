@@ -1,0 +1,13 @@
+url: http://localhost:8000
+debug: false
+queries:
+  - name: "InsertLinks"
+    tools: [autocannon, k6]
+    execution_strategy: FIXED_REQUEST_NUMBER
+    requests: 10000
+    query: |
+      mutation {
+        insert_links(objects: [
+          { from_id: 1, to_id: 2 }
+      ])
+      }
