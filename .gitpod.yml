@@ -7,7 +7,29 @@ tasks:
       dotnet dev-certs https 
       dotnet restore
       dotnet build
+  - init: cd dev && npm run gitpod-init; docker run -v $(pwd)/packages/deeplinks:/deeplinks -v deep_db_data:/data --rm --name links --entrypoint "sh" deepf/deeplinks:main -c "cd / && tar xf /backup/volume.tar --strip 1 && cp /backup/.migrate /deeplinks/.migrate"; sudo chown -R gitpod:gitpod /workspace/dev/packages/deeplinks/.migrate; npm install -g concurrently;
+  - command: npm run gitpod-start;
 
 vscode:
   extensions:
     - muhammad-sammy.csharp
+    - ms-azuretools.vscode-docker
+    - graphql.vscode-graphql
+    - yzhang.markdown-all-in-one
+    - ms-vscode.vscode-typescript-tslint-plugin
+    - hediet.vscode-drawio
+    - ms-azuretools.vscode-docker
+
+ports:
+  - port: 3007
+    onOpen: open-browser
+    visibility: public
+  - port: 4000
+    onOpen: open-browser
+    visibility: public
+  - port: 3006
+    onOpen: ignore
+    visibility: public
+  - port: 8080
+    onOpen: ignore
+    visibility: public

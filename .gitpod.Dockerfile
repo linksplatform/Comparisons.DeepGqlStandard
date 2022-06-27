@@ -1,1 +1,1 @@
-FROM gitpod/workspace-dotnet:latest
+FROM gitpod/workspace-full
