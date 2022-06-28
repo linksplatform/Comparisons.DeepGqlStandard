@@ -32,6 +32,6 @@ tasks:
       dotnet restore
       dotnet build
   - name: Launch Deep
-    before: cd dev;
+    before: cd dev; npm install;
     init: npm run gitpod-init; docker run -v $(pwd)/packages/deeplinks:/deeplinks -v deep_db_data:/data --rm --name links --entrypoint "sh" deepf/deeplinks:main -c "cd / && tar xf /backup/volume.tar --strip 1 && cp /backup/.migrate /deeplinks/.migrate"; sudo chown -R gitpod:gitpod /workspace/dev/packages/deeplinks/.migrate; npm install -g concurrently;
     command: npm run gitpod-start;
