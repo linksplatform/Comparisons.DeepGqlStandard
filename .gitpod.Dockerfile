@@ -1,1 +1,1 @@
-FROM gitpod/workspace-csharp:latest
+FROM gitpod/workspace-dotnet:latest
