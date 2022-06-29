@@ -1,10 +1,10 @@
-url: https://linksplatfo-comparisons-87l0mkfbw3m.ws-eu47.gitpod.io/
+url: https://8000-linksplatfo-comparisons-12ndb1kfx0e.ws-eu47.gitpod.io/
 debug: false
 queries:
   - name: "InsertLinks"
-    tools: [autocannon, k6]
+    tools: [k6]
     execution_strategy: FIXED_REQUEST_NUMBER
-    requests: 10000
+    requests: 1000
     query: |
       mutation {
         insert_links(objects: [
@@ -1012,3 +1012,4 @@ queries:
           returning { id }
         }
       }
+
