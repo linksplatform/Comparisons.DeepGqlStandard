@@ -1015,3 +1015,16 @@ queries:
           returning { id }
         }
       }
+  - name: "ReadLinks"
+    tools: [k6]
+    execution_strategy: FIXED_REQUEST_NUMBER
+    requests: 10
+    query: |
+      query {
+        links {
+          id,
+          to_id,
+          from_id
+        }
+      }
+    
