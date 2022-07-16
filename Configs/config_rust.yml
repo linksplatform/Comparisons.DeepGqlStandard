@@ -1,4 +1,4 @@
-url: https://8000-linksplatfo-comparisons-12ndb1kfx0e.ws-eu47.gitpod.io/
+url: http://localhost:8000
 debug: false
 queries:
   - name: "InsertLinks"

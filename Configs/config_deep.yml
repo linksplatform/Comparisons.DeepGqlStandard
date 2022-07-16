@@ -1,4 +1,4 @@
-url: http://localhost:8080
+url: http://localhost:8080/v1/graphql
 headers:
   X-Hasura-Admin-Secret: myadminsecretkey
   Content-Type: "application/json"
@@ -7,7 +7,7 @@ queries:
   - name: "InsertLinks"
     tools: [k6]
     execution_strategy: FIXED_REQUEST_NUMBER
-    requests: 1000
+    requests: 10
     query: |
       mutation {
         insert_links(objects: [
@@ -1015,4 +1015,3 @@ queries:
           returning { id }
         }
       }
-
