@@ -233,12 +233,12 @@ def metadata(backend):
     }
     import xml.etree.ElementTree as ET
 
+    # Pinned source manifest in this checkout; no external XML is accepted.
+    project = ET.parse(root / "csharp/Doublets.Gql.csproj")  # nosec B314
     versions.update(
         {
             p.attrib["Include"]: p.attrib["Version"]
-            for p in ET.parse(root / "csharp/Doublets.Gql.csproj").iter(
-                "PackageReference"
-            )
+            for p in project.iter("PackageReference")
         }
     )
     versions["postgres"] = "16.13-alpine"
@@ -250,9 +250,7 @@ def metadata(backend):
     versions["dotnet-sdk"] = json.loads((root / "global.json").read_text())["sdk"][
         "version"
     ]
-    versions["dotnet-runtime"] = ET.parse(root / "csharp/Doublets.Gql.csproj").findtext(
-        ".//RuntimeFrameworkVersion"
-    )
+    versions["dotnet-runtime"] = project.findtext(".//RuntimeFrameworkVersion")
     if backend == "deep":
         import re
 

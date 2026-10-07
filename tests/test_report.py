@@ -64,6 +64,9 @@ class ReportTests(unittest.TestCase):
             lambda r: r[0]["operations"]["Create"].update(median_ns=float("nan")),
             lambda r: r[0].update(links=4),
             lambda r: r[0]["metadata"].pop("versions"),
+            lambda r: r.append(r[0]),
+            lambda r: r[0]["operations"]["Create"].update(stdev_ns=1),
+            lambda r: r[0]["operations"]["Create"].update(samples_ns=[-100, 100]),
         ]:
             records = [result(b) for b in ["deep", "rust", "csharp"]]
             mutate(records)

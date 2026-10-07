@@ -3,8 +3,27 @@
 import argparse
 import json
 import time
-from urllib.error import URLError
-from urllib.request import Request, urlopen
+from scripts.client import Client
+
+
+def request(url, path, body=None, timeout=30):
+    # The shared client permits only HTTP and HTTPS, including for health/metadata.
+    client = Client(url)
+    client.connection.timeout = timeout
+    try:
+        client.connection.request(
+            "POST" if body is not None else "GET",
+            client.path.rstrip("/") + path,
+            json.dumps(body) if body is not None else None,
+            client.headers,
+        )
+        response = client.connection.getresponse()
+        data = response.read().decode()
+        if response.status != 200:
+            raise RuntimeError(f"Hasura HTTP {response.status}: {data[:1000]}")
+        return data
+    finally:
+        client.close()
 
 
 def main():
@@ -13,29 +32,26 @@ def main():
     args = parser.parse_args()
     for attempt in range(60):
         try:
-            with urlopen(args.url + "/healthz", timeout=2) as response:
-                if response.status == 200:
-                    break
-        except (OSError, URLError, TimeoutError):
+            request(args.url, "/healthz", timeout=2)
+            break
+        except (OSError, RuntimeError):
             pass
         time.sleep(1)
     else:
         raise RuntimeError("Hasura did not become healthy")
-    request = Request(
-        args.url + "/v1/metadata",
-        headers={"Content-Type": "application/json"},
-        data=json.dumps(
+    print(
+        request(
+            args.url,
+            "/v1/metadata",
             {
                 "type": "pg_track_table",
                 "args": {
                     "source": "default",
                     "table": {"schema": "public", "name": "links"},
                 },
-            }
-        ).encode(),
+            },
+        )
     )
-    with urlopen(request, timeout=30) as response:
-        print(response.read().decode())
 
 
 if __name__ == "__main__":

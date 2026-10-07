@@ -25,65 +25,75 @@ def ratio(baseline, value, baseline_sd, sd):
     )
 
 
+def validate_statistics(data, samples, label):
+    values = data.get("samples_ns", [])
+    median, sd = data.get("median_ns"), data.get("stdev_ns")
+    if len(values) != samples or any(
+        not isinstance(v, (int, float)) or not math.isfinite(v) or v <= 0
+        for v in values
+    ):
+        raise ValueError(f"Invalid samples for {label}")
+    if (
+        not isinstance(median, (int, float))
+        or not math.isfinite(median)
+        or median <= 0
+        or not isinstance(sd, (int, float))
+        or not math.isfinite(sd)
+        or sd < 0
+    ):
+        raise ValueError(f"Invalid statistics for {label}")
+    if not math.isclose(median, statistics.median(values)) or not math.isclose(
+        sd, statistics.stdev(values), abs_tol=1e-6
+    ):
+        raise ValueError(f"Statistics do not match samples for {label}")
+
+
+def validate_provenance(metadata):
+    if any(not metadata.get(k) for k in ["cpu", "date", "run", "commit", "versions"]):
+        raise ValueError("Incomplete provenance")
+    if not isinstance(metadata["versions"], dict) or not all(
+        isinstance(v, str) for v in metadata["versions"].values()
+    ):
+        raise ValueError("Invalid versions")
+
+
+def validate_record(record):
+    backend, size = record.get("backend"), record.get("background_links")
+    if (
+        backend not in BACKENDS
+        or not isinstance(size, int)
+        or not 1 <= size <= 1_000_000
+    ):
+        raise ValueError("Unknown backend or invalid size")
+    parameters = tuple(record.get(k) for k in ["links", "samples", "warmup"])
+    n, samples, warmup = parameters
+    if not all(isinstance(v, int) for v in parameters) or not (
+        1 <= n <= size and 2 <= samples <= 1000 and 0 <= warmup <= 100
+    ):
+        raise ValueError("Invalid measurement settings")
+    validate_provenance(record.get("metadata", {}))
+    operations = record.get("operations", {})
+    if set(operations) != set(OPERATIONS):
+        raise ValueError(f"Missing or unknown operations for {(size, backend)}")
+    for name, data in operations.items():
+        validate_statistics(data, samples, f"{(size, backend)} {name}")
+    return size, backend, parameters
+
+
 def validate(records):
     if not records:
         raise ValueError("No result files")
     seen = set()
     groups = {}
     for record in records:
-        backend, size = record.get("backend"), record.get("background_links")
-        if (
-            backend not in BACKENDS
-            or not isinstance(size, int)
-            or not 1 <= size <= 1_000_000
-        ):
-            raise ValueError("Unknown backend or invalid size")
+        size, backend, parameters = validate_record(record)
         key = (size, backend)
         if key in seen:
             raise ValueError(f"Duplicate result {key}")
         seen.add(key)
-        parameters = tuple(record.get(k) for k in ["links", "samples", "warmup"])
-        n, samples, warmup = parameters
-        if not all(isinstance(v, int) for v in parameters) or not (
-            1 <= n <= size and 2 <= samples <= 1000 and 0 <= warmup <= 100
-        ):
-            raise ValueError("Invalid measurement settings")
         if size in groups and groups[size] != parameters:
             raise ValueError(f"Different workload settings for size {size}")
         groups[size] = parameters
-        metadata = record.get("metadata", {})
-        if any(
-            not metadata.get(k) for k in ["cpu", "date", "run", "commit", "versions"]
-        ):
-            raise ValueError("Incomplete provenance")
-        if not isinstance(metadata["versions"], dict) or not all(
-            isinstance(v, str) for v in metadata["versions"].values()
-        ):
-            raise ValueError("Invalid versions")
-        operations = record.get("operations", {})
-        if set(operations) != set(OPERATIONS):
-            raise ValueError(f"Missing or unknown operations for {key}")
-        for name, data in operations.items():
-            values = data.get("samples_ns", [])
-            median, sd = data.get("median_ns"), data.get("stdev_ns")
-            if len(values) != samples or any(
-                not isinstance(v, (int, float)) or not math.isfinite(v) or v <= 0
-                for v in values
-            ):
-                raise ValueError(f"Invalid samples for {key} {name}")
-            if (
-                not isinstance(median, (int, float))
-                or not math.isfinite(median)
-                or median <= 0
-                or not isinstance(sd, (int, float))
-                or not math.isfinite(sd)
-                or sd < 0
-            ):
-                raise ValueError(f"Invalid statistics for {key} {name}")
-            if not math.isclose(median, statistics.median(values)) or not math.isclose(
-                sd, statistics.stdev(values), abs_tol=1e-6
-            ):
-                raise ValueError(f"Statistics do not match samples for {key} {name}")
     for size in groups:
         if any((size, backend) not in seen for backend in BACKENDS):
             raise ValueError(f"Missing backend for size {size}")

@@ -5,6 +5,19 @@ from scripts.workload import OPERATIONS, Scenario, Settings, measure, scenario
 
 
 class WorkloadTests(unittest.TestCase):
+    def test_hasura_initialization_rejects_non_http_urls(self):
+        import tempfile
+        from pathlib import Path
+        from scripts.init_deep import main
+
+        with tempfile.TemporaryDirectory() as directory:
+            with (
+                patch("sys.argv", ["init_deep", "--url", Path(directory).as_uri()]),
+                patch("scripts.init_deep.time.sleep"),
+                self.assertRaisesRegex(ValueError, "Invalid GraphQL URL"),
+            ):
+                main()
+
     def test_normalization_preserves_query_order(self):
         from scripts.conformance import normalized
 
