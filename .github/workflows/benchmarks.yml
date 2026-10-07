@@ -1,0 +1,154 @@
+name: GraphQL comparison
+on:
+  pull_request:
+    branches: [main]
+    paths: ['rust/**', 'csharp/**', 'scripts/**', 'tests/**', 'schema/**', 'deep/**', 'compose.yml', 'requirements.txt', 'rust-toolchain.toml', 'global.json', '.gitignore', '.github/workflows/benchmarks.yml']
+  push:
+    branches: [main]
+    paths: ['rust/**', 'csharp/**', 'scripts/**', 'tests/**', 'schema/**', 'deep/**', 'compose.yml', 'requirements.txt', 'rust-toolchain.toml', 'global.json', '.gitignore', '.github/workflows/benchmarks.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: gql-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+env:
+  DOTNET_NOLOGO: 'true'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
+  CARGO_TERM_COLOR: always
+  BENCHMARK_LINKS: ${{ github.event_name == 'pull_request' && '10' || '100' }}
+  BENCHMARK_SAMPLES: '10'
+  BENCHMARK_WARMUP: '2'
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d
+        with:
+          toolchain: '1.98.0'
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c # v2
+        with:
+          workspaces: rust
+      - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: csharp/packages.lock.json
+      - uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Python checks
+        run: |
+          pip install -r requirements.txt
+          ruff check scripts tests
+          python -m unittest discover -s tests -v
+      - name: Rust checks
+        run: |
+          cargo fmt --manifest-path rust/Cargo.toml --check
+          cargo clippy --manifest-path rust/Cargo.toml --release --all-targets --locked -- -D warnings
+          cargo test --manifest-path rust/Cargo.toml --release --locked
+          cargo build --manifest-path rust/Cargo.toml --release --locked
+      - name: C# checks
+        run: |
+          dotnet restore csharp/Doublets.Gql.csproj --locked-mode
+          dotnet format csharp/Doublets.Gql.csproj --verify-no-changes --no-restore
+          dotnet build csharp/Doublets.Gql.csproj -c Release --no-restore
+      - name: All servers return the same results
+        run: python -m scripts.run conformance
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: conformance-logs
+          path: results/logs
+  benchmark:
+    needs: test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        backend: [deep, rust, csharp]
+        background: ${{ fromJSON(github.event_name == 'pull_request' && '[1000]' || '[10000,100000,1000000]') }}
+    env:
+      BENCHMARK_BACKGROUND_LINKS: ${{ matrix.background }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d
+        if: matrix.backend == 'rust'
+        with:
+          toolchain: '1.98.0'
+      - uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c # v2
+        if: matrix.backend == 'rust'
+        with:
+          workspaces: rust
+      - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
+        if: matrix.backend == 'csharp'
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: csharp/packages.lock.json
+      - uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4
+        with:
+          python-version: '3.12'
+      - name: Build Rust server
+        if: matrix.backend == 'rust'
+        run: cargo build --manifest-path rust/Cargo.toml --release --locked
+      - name: Build C# server
+        if: matrix.backend == 'csharp'
+        run: |
+          dotnet restore csharp/Doublets.Gql.csproj --locked-mode
+          dotnet build csharp/Doublets.Gql.csproj -c Release --no-restore
+      - name: Measure shared HTTP workload
+        run: python -m scripts.run benchmark --backend '${{ matrix.backend }}'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: bench-${{ matrix.backend }}-${{ matrix.background }}
+          path: results
+  report:
+    needs: benchmark
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          pattern: bench-*
+          merge-multiple: true
+          path: results
+      - uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Generate validated tables and charts
+        run: |
+          pip install -r requirements.txt
+          python -m scripts.report results --readme README.md --charts Docs > report.md
+          cat report.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: comparison-report
+          path: |
+            README.md
+            Docs
+      - name: Commit main results
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        run: |
+          git fetch origin main
+          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+            echo 'Main advanced during measurement; skipping publication of older results'
+            exit 0
+          fi
+          git config user.name LinksPlatformBencher
+          git config user.email linksplatform@gmail.com
+          git add README.md Docs
+          if ! git diff --cached --quiet; then
+            git commit -m 'Update GraphQL comparison results'
+            git push origin HEAD:main
+          fi

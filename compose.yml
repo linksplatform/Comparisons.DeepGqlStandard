@@ -1,0 +1,26 @@
+name: deepgql-comparison
+services:
+  postgres:
+    image: postgres:16.13-alpine@sha256:4e6e670bb069649261c9c18031f0aded7bb249a5b6664ddec29c013a89310d50
+    environment:
+      POSTGRES_PASSWORD: benchmark
+      POSTGRES_DB: deep
+    volumes:
+      - ./deep/links.sql:/docker-entrypoint-initdb.d/links.sql:ro
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U postgres -d deep']
+      interval: 2s
+      timeout: 5s
+      retries: 30
+    mem_limit: 2g
+  hasura:
+    image: hasura/graphql-engine:v2.48.13@sha256:224f4239b28583413b2a0ace7193c467d81f28d791dc8c65597ed11b2cd83123
+    ports: ['127.0.0.1:8080:8080']
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:benchmark@postgres:5432/deep
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'false'
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup
+    depends_on:
+      postgres:
+        condition: service_healthy
+    mem_limit: 2g

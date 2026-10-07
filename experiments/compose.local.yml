@@ -1,0 +1,11 @@
+# Nested local Docker needs the host cgroup namespace and root cgroup parent.
+# CI uses compose.yml unchanged on a regular runner.
+services:
+  postgres:
+    mem_limit: 0
+    cgroup_parent: /
+    cgroup: host
+  hasura:
+    mem_limit: 0
+    cgroup_parent: /
+    cgroup: host
