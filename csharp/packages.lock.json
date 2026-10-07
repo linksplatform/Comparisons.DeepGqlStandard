@@ -1,0 +1,207 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "GraphQL": {
+        "type": "Direct",
+        "requested": "[8.8.5, )",
+        "resolved": "8.8.5",
+        "contentHash": "0dnaIzuzyRkpUfCBOWRLOnbTWcTpvK0pvWjgDTYoU3k/bu4Us1jkid7MPBhcth8I+6rg8SxhXFwNEenx53xUJg==",
+        "dependencies": {
+          "GraphQL-Parser": "9.5.0",
+          "GraphQL.Analyzers": "8.8.5"
+        }
+      },
+      "GraphQL.SystemTextJson": {
+        "type": "Direct",
+        "requested": "[8.8.5, )",
+        "resolved": "8.8.5",
+        "contentHash": "m0uuLLSbnycqvf4IhRnbrC0Vwowdxiel2BH9vr/7ow2VXPWZz0g5A7ucqBDzJ6wqDFS/ixaUgiflFqU6vbgtOg==",
+        "dependencies": {
+          "GraphQL": "[8.8.5, 9.0.0)"
+        }
+      },
+      "Platform.Data.Doublets": {
+        "type": "Direct",
+        "requested": "[0.18.1, )",
+        "resolved": "0.18.1",
+        "contentHash": "b6p7GgLDonEnRdhuy3Xsn/N5g5Qq+aivapAlkFH/Mk/MDTDiSJ0C1wnViC4Ff9/d6IXfmh2Sv/TeGIkyKbTOTw==",
+        "dependencies": {
+          "Platform.Collections.Methods": "0.7.3",
+          "Platform.Data": "0.16.1",
+          "Platform.Data.Doublets.FFI": "0.9.0",
+          "Platform.Memory": "0.4.1",
+          "Platform.Random": "0.3.0",
+          "Platform.Singletons": "0.3.0",
+          "Platform.Timestamps": "0.3.0"
+        }
+      },
+      "GraphQL-Parser": {
+        "type": "Transitive",
+        "resolved": "9.5.0",
+        "contentHash": "5XWJGKHdVi8pyD4P0EglmJmlXEGs0HzvGlEBf3+/Ve1jLYBBKIOkKvY0Ej17b9Kn1bbBxkrmghqbmsMbkLL1nQ=="
+      },
+      "GraphQL.Analyzers": {
+        "type": "Transitive",
+        "resolved": "8.8.5",
+        "contentHash": "2pmvrDAPbjNZfl7CB19cKpQ5y92A+tb1aPVZepz46KTx00/7nTojBTL9iJAOFVoKbq0I0sdZjj60aJLFKY/z8Q=="
+      },
+      "Platform.Collections": {
+        "type": "Transitive",
+        "resolved": "0.4.0",
+        "contentHash": "ofU+XTf0CJry3dnpSq5pdiz8cArZDlrd3IaGtYoV8L6e+OhTdx2n544s+XLOZK90KJUsNv/docu2Y97Asdbvuw==",
+        "dependencies": {
+          "Platform.Disposables": "0.4.0",
+          "Platform.Interfaces": "0.5.0",
+          "Platform.Random": "0.3.0",
+          "Platform.Ranges": "0.5.0"
+        }
+      },
+      "Platform.Collections.Methods": {
+        "type": "Transitive",
+        "resolved": "0.7.3",
+        "contentHash": "GG+XkIiZWlg96w9HxBeCeGrWdXr6+ST8L8piPjvC4lVrB0XaJNWWj+FYSnQOcX7MZOXs70Y6+e5eD0t1GygB5g==",
+        "dependencies": {
+          "Platform.Numbers": "0.9.0"
+        }
+      },
+      "Platform.Converters": {
+        "type": "Transitive",
+        "resolved": "0.4.0",
+        "contentHash": "Rz4gLL2zPB/KsqORljmhMaQR8EVcTBnRRO2rz91F/nu+qJXuzpurx4VgtnL0lyso0NfkmNJffTiLucxwYX9pWQ==",
+        "dependencies": {
+          "Platform.Reflection": "0.7.0"
+        }
+      },
+      "Platform.Data": {
+        "type": "Transitive",
+        "resolved": "0.16.1",
+        "contentHash": "1JdpgdWbowNgVx+aJatRyTEL5CS+hB5mjOJD57+R26XfbCpIsscJwL+Kcmk/ivaop6OABd3SX7M2DaAhYHXKtw==",
+        "dependencies": {
+          "Platform.Delegates": "0.1.1",
+          "Platform.Numbers": "0.9.0",
+          "Platform.Setters": "0.5.0",
+          "Platform.Threading": "0.4.0"
+        }
+      },
+      "Platform.Data.Doublets.FFI": {
+        "type": "Transitive",
+        "resolved": "0.9.0",
+        "contentHash": "NRgGyihV3sdmvNW9SLnwBV14zkq89GJlTgyeiB+EKT2cMOkCjZtd55C/M0Sy5tLkZ076rBcup4jLFKmejnS2tg=="
+      },
+      "Platform.Delegates": {
+        "type": "Transitive",
+        "resolved": "0.1.1",
+        "contentHash": "+182klZgGEJ+yWtxz3BMrTCYcpSXjvJzrYzpK+W2UecAaDKLvLyehjPlMfta+dM/XlKbPt53Wf20vhI1kul0SQ=="
+      },
+      "Platform.Disposables": {
+        "type": "Transitive",
+        "resolved": "0.4.0",
+        "contentHash": "ko0W4cw5XhNxJANdO1T8srpWRVqpPiXtCohumlbTu33kivRBEmk1ivDsySaNhKTyuYjJnrjRYrgA1iEb2sS+/Q==",
+        "dependencies": {
+          "Platform.Exceptions": "0.5.0"
+        }
+      },
+      "Platform.Exceptions": {
+        "type": "Transitive",
+        "resolved": "0.5.0",
+        "contentHash": "htu3iyPVJinbLxU1I1cpc2qFlur7IF2fTc9u2jqQ+3X1Lyzd3aeK9Y7gJu9ZkdnIO3tbdO6wxr1HZG4UhaIG8A=="
+      },
+      "Platform.Interfaces": {
+        "type": "Transitive",
+        "resolved": "0.5.0",
+        "contentHash": "OBViyjgCYWaXH8xhibYL/fbwHfPP/+qVUDxcFGH22IaYzbrFbfNR5TxW6gsk3LR9QXLANnrLsuI7phZueoj/Tw=="
+      },
+      "Platform.IO": {
+        "type": "Transitive",
+        "resolved": "0.5.1",
+        "contentHash": "MZ+uZIrDZuNZZu8J8gv8RcXwGihSTEo9UvFoRHCGIXQnaQxnJ0gBIF5s/zSjJ1+h8c78lv/wmlSvh4zMzwyJIQ==",
+        "dependencies": {
+          "Platform.Threading": "0.5.0",
+          "Platform.Unsafe": "0.6.1"
+        }
+      },
+      "Platform.Memory": {
+        "type": "Transitive",
+        "resolved": "0.4.1",
+        "contentHash": "Jz4Xb0B8pmh6BU9hhvqMgK2L+R0fCxSk1bGWL7WK/WYKAYSuGaJUAvzWdJLTECyfs+w6PVUxXK53q1OXxHRmMQ==",
+        "dependencies": {
+          "Platform.IO": "0.5.1"
+        }
+      },
+      "Platform.Numbers": {
+        "type": "Transitive",
+        "resolved": "0.9.0",
+        "contentHash": "0GgZSH0p+jP933DKtLzCfOAdkJ1cNKrSrisXgMKy0zTMBZOxMxzs83IVXwBju66vm5N/w6lFq8HwCLW0gQsYVA==",
+        "dependencies": {
+          "Platform.Converters": "0.4.0"
+        }
+      },
+      "Platform.Random": {
+        "type": "Transitive",
+        "resolved": "0.3.0",
+        "contentHash": "GX24Xx45cUIr9EZl55evdwb7oYN/nimpoNqDG4zoMDDLqeEpL35zX8IiHHDYITV9F4bjrCrSEiRCVsRFAsi7SQ==",
+        "dependencies": {
+          "Platform.Ranges": "0.5.0"
+        }
+      },
+      "Platform.Ranges": {
+        "type": "Transitive",
+        "resolved": "0.5.0",
+        "contentHash": "CUhZM/4F714NAyrtWtkBx78L4xJpFZ1wp+6ivFvpAXx6DsaBcBsyDxjn5eoLB9LSUYxB11gFkwwmXmJhMgZ3qw==",
+        "dependencies": {
+          "Platform.Exceptions": "0.5.0"
+        }
+      },
+      "Platform.Reflection": {
+        "type": "Transitive",
+        "resolved": "0.7.0",
+        "contentHash": "CvpRnDWH5YArcXlY7lcY0mDYQCtnJAeZsqZ4/IdllJoj7z8JwTufeo/zK62Vn6K0ulTyHNhb+/T3HFusxnrfxA==",
+        "dependencies": {
+          "Platform.Collections": "0.4.0"
+        }
+      },
+      "Platform.Setters": {
+        "type": "Transitive",
+        "resolved": "0.5.0",
+        "contentHash": "vZG+VnYc4u2x5vnBY7rqaFHtOS2AeoLwGV+02JBFa9pxluHwVTu4nVcVBTJTlenZSfAoZUNVsV1StnUWvINkCQ==",
+        "dependencies": {
+          "Platform.Delegates": "0.1.1",
+          "Platform.Interfaces": "0.5.0"
+        }
+      },
+      "Platform.Singletons": {
+        "type": "Transitive",
+        "resolved": "0.3.0",
+        "contentHash": "fCfNw4CqPL6HzsUJVVYI/OLYXGkjmdDCe+QWThW8hPoNNlqMZ+FWbfBXbXpCuDYw9EYhLDlhuTAQMbqNt7kCzg==",
+        "dependencies": {
+          "Platform.Reflection": "0.7.0"
+        }
+      },
+      "Platform.Threading": {
+        "type": "Transitive",
+        "resolved": "0.5.0",
+        "contentHash": "Q0p5oVDbhQ76IGHi/vYIX+de9T270XZmNgjNbHtobc+AoJbIWGf+kZXTzq+MmEfXS2ANtGNe9uWN1a7Nzp7olQ==",
+        "dependencies": {
+          "Platform.Collections": "0.4.0"
+        }
+      },
+      "Platform.Timestamps": {
+        "type": "Transitive",
+        "resolved": "0.3.0",
+        "contentHash": "Lmhm8Vp0DobTlxSVTPZZE+3ABTrvuofcmTQOWZv6TyiZ5NyFBH6m61vZdnIkMa/3lQguKvGfgMsUT97p0t5x7w==",
+        "dependencies": {
+          "Platform.Interfaces": "0.5.0"
+        }
+      },
+      "Platform.Unsafe": {
+        "type": "Transitive",
+        "resolved": "0.6.1",
+        "contentHash": "GbKgPC7lfw+q2GqQEch0NSxHOZXxoLTj3ChjdRZIQBvZnGWzYH6nat8glfTJseOmgdabIxlwogFECoai0O3akA==",
+        "dependencies": {
+          "Platform.Numbers": "0.7.0"
+        }
+      }
+    }
+  }
+}

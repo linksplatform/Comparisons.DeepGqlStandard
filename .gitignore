@@ -348,3 +348,13 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Comparison build products and local measurements
+rust/target/
+csharp/bin/
+csharp/obj/
+__pycache__/
+.venv/
+results/
+ci-logs/
+experiments/*.log

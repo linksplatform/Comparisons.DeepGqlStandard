@@ -1,0 +1,26 @@
+schema { query: query_root mutation: mutation_root }
+scalar bigint
+
+type links { id: bigint! from_id: bigint to_id: bigint }
+type links_mutation_response { affected_rows: Int! returning: [links!]! }
+input bigint_comparison_exp { _eq: bigint _in: [bigint!] _gte: bigint _lte: bigint }
+input links_bool_exp {
+  id: bigint_comparison_exp
+  from_id: bigint_comparison_exp
+  to_id: bigint_comparison_exp
+  _and: [links_bool_exp!]
+  _or: [links_bool_exp!]
+  _not: links_bool_exp
+}
+input links_insert_input { from_id: bigint to_id: bigint }
+input links_set_input { from_id: bigint to_id: bigint }
+enum order_by { asc desc }
+input links_order_by { id: order_by }
+type query_root {
+  links(where: links_bool_exp, order_by: [links_order_by!], limit: Int, offset: Int): [links!]!
+}
+type mutation_root {
+  insert_links(objects: [links_insert_input!]!): links_mutation_response
+  update_links(where: links_bool_exp!, _set: links_set_input): links_mutation_response
+  delete_links(where: links_bool_exp!): links_mutation_response
+}
