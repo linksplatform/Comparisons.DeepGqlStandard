@@ -2,10 +2,10 @@ name: GraphQL comparison
 on:
   pull_request:
     branches: [main]
-    paths: ['rust/**', 'csharp/**', 'scripts/**', 'tests/**', 'schema/**', 'deep/**', 'compose.yml', 'requirements.txt', 'rust-toolchain.toml', 'global.json', '.github/workflows/benchmarks.yml']
+    paths: ['rust/**', 'csharp/**', 'scripts/**', 'tests/**', 'schema/**', 'deep/**', 'compose.yml', 'requirements.txt', 'rust-toolchain.toml', 'global.json', '.gitignore', '.github/workflows/benchmarks.yml']
   push:
     branches: [main]
-    paths: ['rust/**', 'csharp/**', 'scripts/**', 'tests/**', 'schema/**', 'deep/**', 'compose.yml', 'requirements.txt', 'rust-toolchain.toml', 'global.json', '.github/workflows/benchmarks.yml']
+    paths: ['rust/**', 'csharp/**', 'scripts/**', 'tests/**', 'schema/**', 'deep/**', 'compose.yml', 'requirements.txt', 'rust-toolchain.toml', 'global.json', '.gitignore', '.github/workflows/benchmarks.yml']
   workflow_dispatch:
 permissions:
   contents: read

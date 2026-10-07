@@ -59,9 +59,6 @@ class WorkloadTests(unittest.TestCase):
     def test_setup_and_undo_are_outside_timer(self):
         client = Mock()
         events = []
-        client.execute.side_effect = lambda *args: events.append("request") or {
-            "links": []
-        }
         case = Scenario(
             "query",
             {},

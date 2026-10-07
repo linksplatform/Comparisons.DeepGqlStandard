@@ -28,6 +28,18 @@ def result(backend="deep", size=10):
 
 
 class ReportTests(unittest.TestCase):
+    def test_generated_raw_archive_can_be_committed(self):
+        import subprocess
+
+        root = Path(__file__).resolve().parents[1]
+        result = subprocess.run(
+            ["git", "check-ignore", "--no-index", "--", "Docs/results/deep-1000.json"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+
     def test_ratios_and_noise(self):
         self.assertEqual(ratio(100, 50, 0, 0), "2× faster")
         self.assertEqual(ratio(100, 200, 0, 0), "2× slower")
