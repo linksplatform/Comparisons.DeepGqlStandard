@@ -144,5 +144,74 @@ CPU, commit, run link and UTC date. Treat overlapping error ranges or difference
 under 5% as approximately the same.
 
 <!-- results:start -->
-_No published results yet. A successful main run will commit measured tables, provenance and linear/log charts here. PR reports are available as CI artifacts._
+Times are medians per HTTP request (including client encoding/decoding, network, GraphQL and storage); ± values are sample standard deviations. Ratios compare each Doublets server with Deep. Differences below 5% or overlapping ±1 SD ranges are shown as ≈ same.
+
+### B = 10,000, N = 100
+
+10 samples after 2 warm-up requests per operation. Create/update/delete act on N links; Each All returns B links; the other queries return one link.
+
+- **deep**: deep-core-schema 381207dda313ab3c1fed0a4bfc2ddbe631750411, hasura v2.48.13, image-hasura/graphql-engine hasura/graphql-engine:v2.48.13@sha256:224f4239b28583413b2a0ace7193c467d81f28d791dc8c65597ed11b2cd83123, image-postgres postgres:16.13-alpine@sha256:4e6e670bb069649261c9c18031f0aded7bb249a5b6664ddec29c013a89310d50, postgres 16.13-alpine, python 3.12.14; CPU: AMD EPYC 7763 64-Core Processor; 2026-10-07T00:31:41.380314+00:00; [run](https://github.com/linksplatform/Comparisons.DeepGqlStandard/actions/runs/37552205185); commit `9e4f90a2a7eecdeab9b7388b05920764f5ca3991`.
+- **rust**: async-graphql 7.0.17, axum 0.8.4, doublets 0.5.0, python 3.12.15, rust 1.98.0; CPU: AMD EPYC 7763 64-Core Processor; 2026-10-07T00:32:39.480072+00:00; [run](https://github.com/linksplatform/Comparisons.DeepGqlStandard/actions/runs/37552205185); commit `9e4f90a2a7eecdeab9b7388b05920764f5ca3991`.
+- **csharp**: GraphQL 8.8.5, GraphQL.SystemTextJson 8.8.5, Platform.Data.Doublets 0.18.1, dotnet-runtime 10.0.12, dotnet-sdk 10.0.112, python 3.12.14; CPU: AMD EPYC 7763 64-Core Processor; 2026-10-07T00:31:53.263207+00:00; [run](https://github.com/linksplatform/Comparisons.DeepGqlStandard/actions/runs/37552205185); commit `9e4f90a2a7eecdeab9b7388b05920764f5ca3991`.
+
+| Operation | Deep (PostgreSQL + Hasura) | Doublets Rust | Doublets C# |
+|---|---:|---:|---:|
+| Create | 5.68 ms ± 132 µs | 600 µs ± 18 µs (**9.46× faster**) | 3.89 ms ± 105 µs (**1.46× faster**) |
+| Update | 4.76 ms ± 411 µs | 537 µs ± 23.3 µs (**8.87× faster**) | 4.88 ms ± 773 µs (**≈ same**) |
+| Delete | 2.5 ms ± 142 µs | 468 µs ± 15.5 µs (**5.34× faster**) | 2.88 ms ± 21.5 µs (**1.15× slower**) |
+| Each All | 18 ms ± 401 µs | 16.4 ms ± 251 µs (**1.1× faster**) | 86.7 ms ± 7.45 ms (**4.83× slower**) |
+| Each Identity | 1 ms ± 127 µs | 257 µs ± 9.64 µs (**3.9× faster**) | 947 µs ± 23.3 µs (**≈ same**) |
+| Each Concrete | 1.11 ms ± 68.7 µs | 258 µs ± 7.14 µs (**4.32× faster**) | 986 µs ± 81.1 µs (**≈ same**) |
+| Each Outgoing | 1.01 ms ± 119 µs | 256 µs ± 26.3 µs (**3.94× faster**) | 916 µs ± 29.3 µs (**≈ same**) |
+| Each Incoming | 1.02 ms ± 89.6 µs | 264 µs ± 28.7 µs (**3.85× faster**) | 916 µs ± 11.5 µs (**≈ same**) |
+
+![Linear chart B=10000](Docs/bench_10000.png)
+
+![Log chart B=10000](Docs/bench_log_10000.png)
+
+### B = 100,000, N = 100
+
+10 samples after 2 warm-up requests per operation. Create/update/delete act on N links; Each All returns B links; the other queries return one link.
+
+- **deep**: deep-core-schema 381207dda313ab3c1fed0a4bfc2ddbe631750411, hasura v2.48.13, image-hasura/graphql-engine hasura/graphql-engine:v2.48.13@sha256:224f4239b28583413b2a0ace7193c467d81f28d791dc8c65597ed11b2cd83123, image-postgres postgres:16.13-alpine@sha256:4e6e670bb069649261c9c18031f0aded7bb249a5b6664ddec29c013a89310d50, postgres 16.13-alpine, python 3.12.14; CPU: AMD EPYC 9V45 96-Core Processor; 2026-10-07T00:31:53.862066+00:00; [run](https://github.com/linksplatform/Comparisons.DeepGqlStandard/actions/runs/37552205185); commit `9e4f90a2a7eecdeab9b7388b05920764f5ca3991`.
+- **rust**: async-graphql 7.0.17, axum 0.8.4, doublets 0.5.0, python 3.12.15, rust 1.98.0; CPU: INTEL(R) XEON(R) PLATINUM 8573C; 2026-10-07T00:32:37.575773+00:00; [run](https://github.com/linksplatform/Comparisons.DeepGqlStandard/actions/runs/37552205185); commit `9e4f90a2a7eecdeab9b7388b05920764f5ca3991`.
+- **csharp**: GraphQL 8.8.5, GraphQL.SystemTextJson 8.8.5, Platform.Data.Doublets 0.18.1, dotnet-runtime 10.0.12, dotnet-sdk 10.0.112, python 3.12.14; CPU: AMD EPYC 9V45 96-Core Processor; 2026-10-07T00:31:47.508756+00:00; [run](https://github.com/linksplatform/Comparisons.DeepGqlStandard/actions/runs/37552205185); commit `9e4f90a2a7eecdeab9b7388b05920764f5ca3991`.
+
+| Operation | Deep (PostgreSQL + Hasura) | Doublets Rust | Doublets C# |
+|---|---:|---:|---:|
+| Create | 5.65 ms ± 417 µs | 426 µs ± 48.9 µs (**13.3× faster**) | 2.48 ms ± 41.2 µs (**2.28× faster**) |
+| Update | 4.51 ms ± 22.8 ms | 398 µs ± 32.3 µs (**≈ same**) | 2.89 ms ± 97.6 µs (**≈ same**) |
+| Delete | 2.1 ms ± 140 µs | 362 µs ± 19.1 µs (**5.81× faster**) | 1.67 ms ± 162 µs (**1.26× faster**) |
+| Each All | 101 ms ± 1.87 ms | 147 ms ± 4.6 ms (**1.46× slower**) | 136 ms ± 9.5 ms (**1.35× slower**) |
+| Each Identity | 719 µs ± 107 µs | 140 µs ± 14.2 µs (**5.14× faster**) | 340 µs ± 36.4 µs (**2.11× faster**) |
+| Each Concrete | 810 µs ± 75.2 µs | 128 µs ± 12.2 µs (**6.34× faster**) | 251 µs ± 84.2 µs (**3.23× faster**) |
+| Each Outgoing | 752 µs ± 78.5 µs | 136 µs ± 8.12 µs (**5.51× faster**) | 313 µs ± 10.2 µs (**2.4× faster**) |
+| Each Incoming | 769 µs ± 75.1 µs | 125 µs ± 9.11 µs (**6.15× faster**) | 222 µs ± 35.2 µs (**3.47× faster**) |
+
+![Linear chart B=100000](Docs/bench_100000.png)
+
+![Log chart B=100000](Docs/bench_log_100000.png)
+
+### B = 1,000,000, N = 100
+
+10 samples after 2 warm-up requests per operation. Create/update/delete act on N links; Each All returns B links; the other queries return one link.
+
+- **deep**: deep-core-schema 381207dda313ab3c1fed0a4bfc2ddbe631750411, hasura v2.48.13, image-hasura/graphql-engine hasura/graphql-engine:v2.48.13@sha256:224f4239b28583413b2a0ace7193c467d81f28d791dc8c65597ed11b2cd83123, image-postgres postgres:16.13-alpine@sha256:4e6e670bb069649261c9c18031f0aded7bb249a5b6664ddec29c013a89310d50, postgres 16.13-alpine, python 3.12.14; CPU: AMD EPYC 7763 64-Core Processor; 2026-10-07T00:36:13.479168+00:00; [run](https://github.com/linksplatform/Comparisons.DeepGqlStandard/actions/runs/37552205185); commit `9e4f90a2a7eecdeab9b7388b05920764f5ca3991`.
+- **rust**: async-graphql 7.0.17, axum 0.8.4, doublets 0.5.0, python 3.12.15, rust 1.98.0; CPU: INTEL(R) XEON(R) PLATINUM 8573C; 2026-10-07T00:33:07.486128+00:00; [run](https://github.com/linksplatform/Comparisons.DeepGqlStandard/actions/runs/37552205185); commit `9e4f90a2a7eecdeab9b7388b05920764f5ca3991`.
+- **csharp**: GraphQL 8.8.5, GraphQL.SystemTextJson 8.8.5, Platform.Data.Doublets 0.18.1, dotnet-runtime 10.0.12, dotnet-sdk 10.0.112, python 3.12.14; CPU: AMD EPYC 7763 64-Core Processor; 2026-10-07T00:32:32.760691+00:00; [run](https://github.com/linksplatform/Comparisons.DeepGqlStandard/actions/runs/37552205185); commit `9e4f90a2a7eecdeab9b7388b05920764f5ca3991`.
+
+| Operation | Deep (PostgreSQL + Hasura) | Doublets Rust | Doublets C# |
+|---|---:|---:|---:|
+| Create | 46.9 ms ± 2.51 ms | 462 µs ± 25.6 µs (**101× faster**) | 911 µs ± 51.6 µs (**51.5× faster**) |
+| Update | 46.4 ms ± 471 µs | 419 µs ± 19.9 µs (**111× faster**) | 1.14 ms ± 222 µs (**40.6× faster**) |
+| Delete | 2.6 ms ± 465 µs | 350 µs ± 22.2 µs (**7.42× faster**) | 975 µs ± 761 µs (**2.67× faster**) |
+| Each All | 1.81 s ± 20 ms | 1.73 s ± 68.7 ms (**≈ same**) | 2.29 s ± 152 ms (**1.26× slower**) |
+| Each Identity | 970 µs ± 131 µs | 155 µs ± 18.5 µs (**6.26× faster**) | 511 µs ± 50.2 µs (**1.9× faster**) |
+| Each Concrete | 1.11 ms ± 103 µs | 153 µs ± 11.6 µs (**7.23× faster**) | 454 µs ± 64 µs (**2.44× faster**) |
+| Each Outgoing | 994 µs ± 84.4 µs | 136 µs ± 7.17 µs (**7.28× faster**) | 440 µs ± 18.7 µs (**2.26× faster**) |
+| Each Incoming | 1.05 ms ± 95.5 µs | 136 µs ± 16.3 µs (**7.75× faster**) | 454 µs ± 23.7 µs (**2.32× faster**) |
+
+![Linear chart B=1000000](Docs/bench_1000000.png)
+
+![Log chart B=1000000](Docs/bench_log_1000000.png)
 <!-- results:end -->
