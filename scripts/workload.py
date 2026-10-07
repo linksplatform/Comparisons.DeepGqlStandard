@@ -247,9 +247,12 @@ def metadata(backend):
     versions["rust"] = (
         (root / "rust-toolchain.toml").read_text().split('channel = "')[1].split('"')[0]
     )
-    versions["dotnet-sdk"] = json.loads((root / "csharp/global.json").read_text())[
-        "sdk"
-    ]["version"]
+    versions["dotnet-sdk"] = json.loads((root / "global.json").read_text())["sdk"][
+        "version"
+    ]
+    versions["dotnet-runtime"] = ET.parse(root / "csharp/Doublets.Gql.csproj").findtext(
+        ".//RuntimeFrameworkVersion"
+    )
     if backend == "deep":
         import re
 
@@ -269,6 +272,7 @@ def metadata(backend):
             "GraphQL",
             "GraphQL.SystemTextJson",
             "dotnet-sdk",
+            "dotnet-runtime",
         },
     }
     versions = {
